@@ -23,6 +23,10 @@ RUN apk add mysql-client bash nginx net-tools vim gnupg curl ca-certificates hto
 
 RUN docker-php-ext-install mysqli
 
+RUN apk add --no-cache $PHPIZE_DEPS \
+    && pecl install xdebug-2.5.5 \
+    && docker-php-ext-enable xdebug
+
 EXPOSE 80
 EXPOSE 443
 
