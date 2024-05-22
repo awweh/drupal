@@ -21,7 +21,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 RUN apk add mysql-client bash nginx net-tools vim gnupg curl ca-certificates htop sudo zip unzip git supervisor wget openssl
 
+RUN docker-php-ext-install mysqli
+
 EXPOSE 80
 EXPOSE 443
 
-CMD ["/bin/bash", "-c", "php-fpm && nginx -g "daemon off;""]
+ENTRYPOINT ["bash", "/usr/local/bin/entrypoint.sh"]
