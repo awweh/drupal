@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+    app:
+        image: iiiepe/apache-drupal6
+        ports:
+          - 80:80
+        links:
+          - database
+        volumes:
+            - ./app:/var/www
+
+    memcached:
+        image: memcached:alpine
+        restart: always
+        networks:
+            - default
+
+    mail:
+        image: mailhog/mailhog
+        ports:
+            - '${FORWARD_MAILHOG_PORT:-1025}:1025'
+            - '${FORWARD_MAILHOG_DASHBOARD_PORT:-8025}:8025'
+        networks:
+            - default
+
+    database:
+        image: mysql:5.7
+        restart: always
+        volumes:
+            - ./data/db-data:/var/lib/mysql
+        command: mysqld --explicit_defaults_for_timestamp
+        environment:
+            MYSQL_ROOT_HOST: '%'
+            MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD:-secret}
+            MYSQL_DATABASE: ${DATABASE_DATABASE:-drupal}
+            MYSQL_USER: ${DATABASE_USERNAME:-drupal}
+            MYSQL_PASSWORD: ${DATABASE_PASSWORD:-drupal}
+        networks:
+            - default
